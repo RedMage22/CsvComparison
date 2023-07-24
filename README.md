@@ -13,6 +13,9 @@ Clone the repo
 
 - Once the repo is cloned, you can start the app by going to the gradle pane in IntelliJ. Under CsvComparison click on Tasks -> application -> run.
     - Alternatively you can run the `CsvComparisonApp.java` file.
+- The app has two file buttons, `control` and `sample` that will look for and use `csv` files.
+- The third button, `output`, can manually be set or will automatically update to the directory of the last file opened. 
+- The `process` button starts the comparison process.
 - The app uses the control file’s 1st column values to lookup records in the sample file.
 - It creates an output file that contains the compared results where each column of the record is duplicated and suffixed with _a and _b respectively to
   distinguish between control and sample data.
