@@ -1,6 +1,7 @@
 package com.redmage.csvcomparison.controller;
 
 import com.redmage.csvcomparison.csv_processor.CsvProcessor;
+import com.redmage.csvcomparison.model.CsvModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -35,10 +36,8 @@ public class CsvComparisonController {
     private FileChooser fileChooser;
     private DirectoryChooser directoryChooser;
 
-    private File control;
-    private File sample;
-    private File outputDir;
-    private boolean isOutputDirSelected = false;
+    private CsvModel csvModel;
+
 
     public CsvComparisonController() {
         fileChooser = new FileChooser();
@@ -47,36 +46,37 @@ public class CsvComparisonController {
         fileChooser.getExtensionFilters().add(csvExtensionFilter);
 
         directoryChooser = new DirectoryChooser();
+        csvModel = new CsvModel();
     }
 
     @FXML
     private void handleControlButtonAction() {
-        control = updateTextField(controlButton, controlTextField);
+        csvModel.setControl(updateTextField(controlButton, controlTextField));
     }
 
     @FXML
     private void handleSampleButtonAction() {
-        sample = updateTextField(sampleButton, sampleTextField);
+        csvModel.setSample(updateTextField(sampleButton, sampleTextField));
     }
 
     @FXML
     private void handleOutputButtonAction() {
-        outputDir = directoryChooser.showDialog(outputButton.getScene().getWindow());
+        File outputDir = directoryChooser.showDialog(outputButton.getScene().getWindow());
         if (outputDir != null) {
+            csvModel.setOutputDir(outputDir);
             updateOutputDir(outputDir);
-            isOutputDirSelected = true;
+            csvModel.setOutputDirSelected(true);
         }
     }
 
     @FXML
     private void handleProcessButtonAction() {
         try {
-            CsvProcessor.process(control, sample, outputDir);
+            CsvProcessor.process(csvModel);
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Process completed!", ButtonType.OK);
             alert.showAndWait();
-            clearFiles();
+            csvModel.resetToDefaults();
             clearTextFields();
-            isOutputDirSelected = false;
         } catch (FileNotFoundException e) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Missing csv file(s)!", ButtonType.OK);
             alert.showAndWait();
@@ -95,12 +95,8 @@ public class CsvComparisonController {
     }
 
     private void updateOutputDir(File file) {
-        if (!isOutputDirSelected) {
-            if (file.isFile()) {
-                outputDir = new File(file.getParent());
-            } else {
-                outputDir = file;
-            }
+        File outputDir = csvModel.updateOutputDir(file);
+        if (outputDir != null) {
             outputTextField.setText(outputDir.toString());
             updateInitialFileDirectories(outputDir);
         }
@@ -109,13 +105,6 @@ public class CsvComparisonController {
     private void updateInitialFileDirectories(File dir) {
         fileChooser.setInitialDirectory(dir);
         directoryChooser.setInitialDirectory(dir);
-    }
-
-
-    private void clearFiles() {
-        control = null;
-        sample = null;
-        outputDir = null;
     }
 
     private void clearTextFields() {
