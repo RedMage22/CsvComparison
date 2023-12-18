@@ -21,7 +21,7 @@ public class CsvMatcher {
         String firstValue = firstEntry.getValue();
 
         if (!firstValue.contains(",")) {
-            throw new IllegalArgumentException("String was not comma delimited");
+            throw new IllegalArgumentException("String was not comma delimited!");
         }
 
         String[] firstValueArray = firstValue.split(",");
@@ -43,8 +43,8 @@ public class CsvMatcher {
 
         mapA.forEach((k, v) -> {
             String newColumns = "";
-            Boolean isEqual = false;
-            String noValue = "no value";
+            boolean isEqual = false;
+            String noValue = "0";
             String[] mapAValues = v.split(",");
 
             if (mapB.containsKey(k) && !resultsMap.containsKey(k)) {
@@ -58,18 +58,31 @@ public class CsvMatcher {
                     }
                     newColumns = newColumns.concat(mapAValues[i]).concat(",").concat(mapBValues[i]).concat(",");
                 }
-                newColumns = newColumns.concat(isEqual.toString());
+                newColumns = newColumns.concat(Boolean.toString(isEqual));
             } else {
                 for(int i = 0; i < mapAValues.length; i++) {
                     newColumns = newColumns.concat(mapAValues[i]).concat(",").concat(noValue).concat(",");
                 }
-                newColumns = newColumns.concat(isEqual.toString());
+                newColumns = newColumns.concat(Boolean.toString(isEqual));
             }
 
             if (!resultsMap.containsKey(k)) {
                 sortedMap.put(k, newColumns);
             }
 
+        });
+
+        mapB.forEach((k, v) -> {
+            String newColumns = "";
+            String[] mapBValues = v.split(",");
+
+            if (!mapA.containsKey(k) && !resultsMap.containsKey(k)) {
+                for(int i = 0; i < mapBValues.length; i++) {
+                    newColumns = newColumns.concat("0").concat(",").concat(mapBValues[i]).concat(",");
+                }
+                newColumns = newColumns.concat(Boolean.toString(false));
+                sortedMap.put(k, newColumns);
+            }
         });
 
         resultsMap.putAll(sortedMap);
@@ -81,13 +94,11 @@ public class CsvMatcher {
 
     private static void addResultSummary(Map<String, String> resultsMap, long recordTotalA,long recordTotalB) {
         long falseTotal = resultsMap.entrySet().stream().filter(k -> k.getValue().contains("false")).count();
-        long noValueTotal = resultsMap.entrySet().stream().filter(k -> k.getValue().contains("no value")).count();
 
         String summaryKey = "----------------------Records summary-------------------------";
         String summaryValue = "Total rows in a =  " + (recordTotalA - 1) + "\n" +
                 "Total rows in b = " + (recordTotalB - 1) + "\n" +
-                "Total unequal (FALSE) data rows = " + falseTotal + "\n" +
-                "Total 'no value' data rows in b = " + noValueTotal;
+                "Total unequal (FALSE) data rows = " + falseTotal;
 
         resultsMap.put(summaryKey, summaryValue);
     }
