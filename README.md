@@ -19,11 +19,12 @@ Clone the repo
 - The app has two file buttons, `File 1` and `File 2` that will only open `csv` files.
 - The third button, `output`, can manually be set the output destination or will automatically update the output destination to the directory of the last file opened. 
 - The `process` button starts the comparison process.
-- The app assumes that both files have all the necessary columns
-  - The first column of each file should have unique values
-  - These unique values are used to compare each row in the other file.
-  - Columns should be in the same order with the same value types.
-- Once the comparison process is successfully done, a window will pop up to notify you. 
+- The app assumes that:
+  - the first column of each file has unique values to allow for successful comparisons.
+  - both files have all the necessary columns present
+  - columns are in the same order with the same value types.
+- Once the comparison process is completes, a pop-up notification will appear.
+- If the app experiences an 
 - The app creates an output file that contains rows of the compared results next to each other.
   - each column of the original record is duplicated and suffixed with _a and _b, respectively, to
     distinguish between File 1 and File 2 data.

@@ -3,10 +3,7 @@ package com.redmage.csvcomparison.controller;
 import com.redmage.csvcomparison.csv_processor.CsvProcessor;
 import com.redmage.csvcomparison.model.CsvModel;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
@@ -71,17 +68,31 @@ public class CsvComparisonController {
 
     @FXML
     private void handleProcessButtonAction() {
+        Alert alert;
         try {
             CsvProcessor.process(csvModel);
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Process completed!", ButtonType.OK);
+            alert = new Alert(Alert.AlertType.INFORMATION, "Process completed!", ButtonType.OK);
             alert.showAndWait();
             csvModel.resetToDefaults();
             clearTextFields();
         } catch (FileNotFoundException e) {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Missing csv file(s)!", ButtonType.OK);
+            alert = new Alert(Alert.AlertType.ERROR, "Missing csv file(s)!\n" + buildErrorMessage(e), ButtonType.OK);
             alert.showAndWait();
+            e.printStackTrace();
+        } catch (Exception e) {
+            if (e instanceof ArrayIndexOutOfBoundsException) {
+                alert = new Alert(Alert.AlertType.ERROR, "Check that all columns are present in both files!\n" +
+                        buildErrorMessage(e), ButtonType.OK);
+            } else {
+                alert = new Alert(Alert.AlertType.ERROR, buildErrorMessage(e), ButtonType.OK);
+            }
+            alert.showAndWait();
+            e.printStackTrace();
         }
+    }
 
+    private String buildErrorMessage(Exception e) {
+        return (e.getMessage() != null) ? e.getClass().getName() + " occurred!\n" + e.getMessage() : e.getClass().getName() + " occurred!";
     }
 
     private File updateTextField(Button button, TextField textField) {
