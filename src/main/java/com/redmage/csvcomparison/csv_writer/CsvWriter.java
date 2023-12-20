@@ -7,9 +7,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class CsvWriter {
 
+    private static Logger logger = Logger.getLogger(CsvWriter.class.getName());
 
     private CsvWriter() {}
 
@@ -38,7 +40,7 @@ public class CsvWriter {
             });
 
             bufferedWriter.close();
-
+            logger.info("Writing file " + csvFile.getAbsolutePath());
         } catch (Exception e) {
             e.printStackTrace();
         }

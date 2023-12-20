@@ -1,7 +1,7 @@
 module com.redmage.csvcomparison {
     requires javafx.controls;
     requires javafx.fxml;
-
+    requires java.logging;
 
     opens com.redmage.csvcomparison to javafx.fxml;
     exports com.redmage.csvcomparison;

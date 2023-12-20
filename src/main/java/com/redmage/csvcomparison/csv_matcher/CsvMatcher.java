@@ -3,8 +3,11 @@ package com.redmage.csvcomparison.csv_matcher;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
 public class CsvMatcher {
+
+    private static Logger logger = Logger.getLogger(CsvMatcher.class.getName());
 
     private CsvMatcher() {}
 
@@ -41,6 +44,7 @@ public class CsvMatcher {
 
         Map<String, String> sortedMap = new TreeMap<>();
 
+        logger.info("Matching records in file 1 to file 2.");
         mapA.forEach((k, v) -> {
             String newColumns = "";
             boolean isEqual = false;
@@ -72,6 +76,7 @@ public class CsvMatcher {
 
         });
 
+        logger.info("Scanning for unmatched records in file 2.");
         mapB.forEach((k, v) -> {
             String newColumns = "";
             String[] mapBValues = v.split(",");
