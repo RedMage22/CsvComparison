@@ -4,8 +4,11 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class CsvReader {
+
+    private static Logger logger = Logger.getLogger(CsvReader.class.getName());
 
     private CsvReader() {}
 
@@ -19,6 +22,7 @@ public class CsvReader {
                 map.put(getKey(row), getValue(row));
             }
             reader.close();
+            logger.info(file + " read successfully! " + (map.size() - 1) + " records loaded.");
         } catch (Exception e) {
             e.printStackTrace();
         }
