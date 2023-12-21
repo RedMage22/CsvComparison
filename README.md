@@ -29,8 +29,9 @@ Clone the repo
   - each column of the original record is duplicated and suffixed with _a and _b, respectively, to
     distinguish between File 1 and File 2 data.
 - An `Is Equal?` boolean value is appended to the end of each record comparison to conveniently show record equality. (TRUE or FALSE)
-- If a record found in either file is not present in the other file the relevant column value for that record will be marked with `0` and will
-  automatically fail the comparison check - `Is Equal?` value will be FALSE.
+- If a record found in either file is not present in the other file, the relevant column value for that record will be marked with `no data` and will
+  automatically fail the comparison check - The `Is Equal?` value will be FALSE.
 - At the bottom of the newly created output file you will find a record summary highlighting:
     - total record counts in both files
     - total number of failed comparisons
+    - total number of records not found in both files

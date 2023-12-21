@@ -45,10 +45,11 @@ public class CsvMatcher {
         Map<String, String> sortedMap = new TreeMap<>();
 
         logger.info("Matching records in file 1 to file 2.");
+        String noData = "no data";
+        Map<String, String> noMatchMapA = new LinkedHashMap<>();
         mapA.forEach((k, v) -> {
             String newColumns = "";
             boolean isEqual = false;
-            String noValue = "0";
             String[] mapAValues = v.split(",");
 
             if (mapB.containsKey(k) && !resultsMap.containsKey(k)) {
@@ -65,9 +66,10 @@ public class CsvMatcher {
                 newColumns = newColumns.concat(Boolean.toString(isEqual));
             } else {
                 for(int i = 0; i < mapAValues.length; i++) {
-                    newColumns = newColumns.concat(mapAValues[i]).concat(",").concat(noValue).concat(",");
+                    newColumns = newColumns.concat(mapAValues[i]).concat(",").concat(noData).concat(",");
                 }
                 newColumns = newColumns.concat(Boolean.toString(isEqual));
+                noMatchMapA.put(k, newColumns);
             }
 
             if (!resultsMap.containsKey(k)) {
@@ -77,33 +79,37 @@ public class CsvMatcher {
         });
 
         logger.info("Scanning for unmatched records in file 2.");
+        Map<String, String> noMatchMapB = new LinkedHashMap<String, String>();
         mapB.forEach((k, v) -> {
             String newColumns = "";
             String[] mapBValues = v.split(",");
 
             if (!mapA.containsKey(k) && !resultsMap.containsKey(k)) {
                 for(int i = 0; i < mapBValues.length; i++) {
-                    newColumns = newColumns.concat("0").concat(",").concat(mapBValues[i]).concat(",");
+                    newColumns = newColumns.concat(noData).concat(",").concat(mapBValues[i]).concat(",");
                 }
                 newColumns = newColumns.concat(Boolean.toString(false));
                 sortedMap.put(k, newColumns);
+                noMatchMapB.put(k, newColumns);
             }
         });
 
         resultsMap.putAll(sortedMap);
 
-        addResultSummary(resultsMap, mapA.size(), mapB.size());
+        addResultSummary(resultsMap, mapA.size(), mapB.size(), noMatchMapA.size(), noMatchMapB.size());
 
         return resultsMap;
     }
 
-    private static void addResultSummary(Map<String, String> resultsMap, long recordTotalA,long recordTotalB) {
+    private static void addResultSummary(Map<String, String> resultsMap, long recordTotalA,long recordTotalB, long noMatchA, long noMatchB) {
         long falseTotal = resultsMap.entrySet().stream().filter(k -> k.getValue().contains("false")).count();
 
         String summaryKey = "----------------------Records summary-------------------------";
-        String summaryValue = "Total rows in a =  " + (recordTotalA - 1) + "\n" +
-                "Total rows in b = " + (recordTotalB - 1) + "\n" +
-                "Total unequal (FALSE) data rows = " + falseTotal;
+        String summaryValue = "Total rows in file 1 =  " + (recordTotalA - 1) + "\n" +
+                "Total rows in file 2 = " + (recordTotalB - 1) + "\n" +
+                "Total unequal (FALSE) data rows = " + falseTotal + "\n" +
+                "Total rows not found in file 1 = " + noMatchB + "\n" +
+                "Total rows not found in file 2 = " + noMatchA;
 
         resultsMap.put(summaryKey, summaryValue);
     }
