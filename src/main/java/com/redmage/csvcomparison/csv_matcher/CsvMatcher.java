@@ -1,5 +1,7 @@
 package com.redmage.csvcomparison.csv_matcher;
 
+import com.redmage.csvcomparison.formatting.LogColors;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -44,7 +46,7 @@ public class CsvMatcher {
 
         Map<String, String> sortedMap = new TreeMap<>();
 
-        logger.info("Matching records in file 1 to file 2.");
+        logger.info(LogColors.ANSI_GREEN + "Matching records in file 1 to file 2." + LogColors.ANSI_RESET);
         String noData = "no data";
         Map<String, String> noMatchMapA = new LinkedHashMap<>();
         mapA.forEach((k, v) -> {
@@ -65,8 +67,8 @@ public class CsvMatcher {
                 }
                 newColumns = newColumns.concat(Boolean.toString(isEqual));
             } else {
-                for(int i = 0; i < mapAValues.length; i++) {
-                    newColumns = newColumns.concat(mapAValues[i]).concat(",").concat(noData).concat(",");
+                for (String mapAValue : mapAValues) {
+                    newColumns = newColumns.concat(mapAValue).concat(",").concat(noData).concat(",");
                 }
                 newColumns = newColumns.concat(Boolean.toString(isEqual));
                 noMatchMapA.put(k, newColumns);
@@ -78,21 +80,23 @@ public class CsvMatcher {
 
         });
 
-        logger.info("Scanning for unmatched records in file 2.");
-        Map<String, String> noMatchMapB = new LinkedHashMap<String, String>();
-        mapB.forEach((k, v) -> {
+        logger.info(LogColors.ANSI_GREEN + "Scanning for unmatched records in file 2." + LogColors.ANSI_RESET);
+        Map<String, String> noMatchMapB = new LinkedHashMap<>();
+        for (Map.Entry<String, String> entry : mapB.entrySet()) {
+            String k = entry.getKey();
+            String v = entry.getValue();
             String newColumns = "";
             String[] mapBValues = v.split(",");
 
             if (!mapA.containsKey(k) && !resultsMap.containsKey(k)) {
-                for(int i = 0; i < mapBValues.length; i++) {
-                    newColumns = newColumns.concat(noData).concat(",").concat(mapBValues[i]).concat(",");
+                for (String mapBValue : mapBValues) {
+                    newColumns = newColumns.concat(noData).concat(",").concat(mapBValue).concat(",");
                 }
                 newColumns = newColumns.concat(Boolean.toString(false));
                 sortedMap.put(k, newColumns);
                 noMatchMapB.put(k, newColumns);
             }
-        });
+        }
 
         resultsMap.putAll(sortedMap);
 
