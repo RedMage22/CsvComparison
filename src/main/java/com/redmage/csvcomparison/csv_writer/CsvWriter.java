@@ -1,5 +1,7 @@
 package com.redmage.csvcomparison.csv_writer;
 
+import com.redmage.csvcomparison.formatting.LogColors;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -21,7 +23,6 @@ public class CsvWriter {
         }
         try {
             File csvFile = new File(filePath + generateFileName());
-            csvFile.setWritable(true);
 
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(csvFile));
 
@@ -40,7 +41,7 @@ public class CsvWriter {
             });
 
             bufferedWriter.close();
-            logger.info("Writing file " + csvFile.getAbsolutePath());
+            logger.info(LogColors.ANSI_GREEN + "Writing file " + csvFile.getAbsolutePath() + LogColors.ANSI_RESET);
         } catch (Exception e) {
             e.printStackTrace();
         }

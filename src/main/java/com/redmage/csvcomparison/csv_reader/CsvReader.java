@@ -1,5 +1,7 @@
 package com.redmage.csvcomparison.csv_reader;
 
+import com.redmage.csvcomparison.formatting.LogColors;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.LinkedHashMap;
@@ -22,7 +24,7 @@ public class CsvReader {
                 map.put(getKey(row), getValue(row));
             }
             reader.close();
-            logger.info(file + " read successfully! " + (map.size() - 1) + " records loaded.");
+            logger.info(LogColors.ANSI_GREEN + file + " read successfully! " + (map.size() - 1) + " records loaded." + LogColors.ANSI_RESET);
         } catch (Exception e) {
             e.printStackTrace();
         }
