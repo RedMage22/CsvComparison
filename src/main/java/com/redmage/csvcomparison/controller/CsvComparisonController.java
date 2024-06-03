@@ -48,12 +48,12 @@ public class CsvComparisonController {
 
     @FXML
     private void handleControlButtonAction() {
-        csvModel.setControl(updateTextField(controlButton, controlTextField));
+        csvModel.setFile1(updateTextField(controlButton, controlTextField));
     }
 
     @FXML
     private void handleSampleButtonAction() {
-        csvModel.setSample(updateTextField(sampleButton, sampleTextField));
+        csvModel.setFile2(updateTextField(sampleButton, sampleTextField));
     }
 
     @FXML

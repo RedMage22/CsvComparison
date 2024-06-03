@@ -4,8 +4,8 @@ import java.io.File;
 
 public class CsvModel {
 
-    private File control;
-    private File sample;
+    private File file1;
+    private File file2;
     private File outputDir;
     private boolean isOutputDirSelected;
 
@@ -13,20 +13,20 @@ public class CsvModel {
         isOutputDirSelected = false;
     }
 
-    public File getControl() {
-        return control;
+    public File getFile1() {
+        return file1;
     }
 
-    public void setControl(File control) {
-        this.control = control;
+    public void setFile1(File file1) {
+        this.file1 = file1;
     }
 
-    public File getSample() {
-        return sample;
+    public File getFile2() {
+        return file2;
     }
 
-    public void setSample(File sample) {
-        this.sample = sample;
+    public void setFile2(File file2) {
+        this.file2 = file2;
     }
 
     public File getOutputDir() {
@@ -58,8 +58,8 @@ public class CsvModel {
     }
 
     public void resetToDefaults() {
-        control = null;
-        sample = null;
+        file1 = null;
+        file2 = null;
         outputDir = null;
         isOutputDirSelected = false;
     }
