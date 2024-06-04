@@ -13,7 +13,7 @@ public class CsvMatcher {
 
     private CsvMatcher() {}
 
-    public static Map<String, String> match(Map<String, String> mapA, Map<String, String> mapB) throws IllegalArgumentException {
+    public static Map<String, String> match(Map<String, String> mapA, Map<String, String> mapB, String fileName1, String fileName2) throws IllegalArgumentException {
         if (mapA == null || mapA.isEmpty() || mapB == null || mapB.isEmpty()) {
             return null;
         }
@@ -25,11 +25,14 @@ public class CsvMatcher {
         String firstKey = firstEntry.getKey();
         String firstValue = firstEntry.getValue();
 
-        if (!firstValue.contains(",")) {
-            throw new IllegalArgumentException("String was not comma delimited!");
+        String[] firstValueArray = null;
+
+        if (firstValue.contains(",")) {
+            firstValueArray = firstValue.split(",");
+        } else {
+            firstValueArray = new String[] { firstValue };
         }
 
-        String[] firstValueArray = firstValue.split(",");
         String abColumns = "";
 
         for (String column : firstValueArray) {
@@ -46,7 +49,7 @@ public class CsvMatcher {
 
         Map<String, String> sortedMap = new TreeMap<>();
 
-        logger.info(LogColors.ANSI_GREEN + "Matching records in file 1 to file 2." + LogColors.ANSI_RESET);
+        logger.info(LogColors.ANSI_GREEN + "Matching records in " + fileName1 + " to " + fileName2 + "." + LogColors.ANSI_RESET);
         String noData = "no data";
         Map<String, String> noMatchMapA = new LinkedHashMap<>();
         mapA.forEach((k, v) -> {
@@ -80,7 +83,7 @@ public class CsvMatcher {
 
         });
 
-        logger.info(LogColors.ANSI_GREEN + "Scanning for unmatched records in file 2." + LogColors.ANSI_RESET);
+        logger.info(LogColors.ANSI_GREEN + "Scanning for unmatched records in " + fileName2 + "." + LogColors.ANSI_RESET);
         Map<String, String> noMatchMapB = new LinkedHashMap<>();
         for (Map.Entry<String, String> entry : mapB.entrySet()) {
             String k = entry.getKey();
@@ -100,20 +103,23 @@ public class CsvMatcher {
 
         resultsMap.putAll(sortedMap);
 
-        addResultSummary(resultsMap, mapA.size(), mapB.size(), noMatchMapA.size(), noMatchMapB.size());
+        addResultSummary(resultsMap, mapA.size(), mapB.size(), noMatchMapA.size(), noMatchMapB.size(), fileName1, fileName2);
 
         return resultsMap;
     }
 
-    private static void addResultSummary(Map<String, String> resultsMap, long recordTotalA,long recordTotalB, long noMatchA, long noMatchB) {
+    private static void addResultSummary(Map<String, String> resultsMap, long recordTotalA, long recordTotalB,
+                                        long noMatchA, long noMatchB, String fileName1, String fileName2) {
         long falseTotal = resultsMap.entrySet().stream().filter(k -> k.getValue().contains("false")).count();
 
         String summaryKey = "----------------------Records summary-------------------------";
-        String summaryValue = "Total rows in file 1 =  " + (recordTotalA - 1) + "\n" +
-                "Total rows in file 2 = " + (recordTotalB - 1) + "\n" +
+        String summaryValue = "Total rows in " + fileName1 + " = " + (recordTotalA - 1) + "\n" +
+                "Total rows in " + fileName2 + " = " + (recordTotalB - 1) + "\n" +
                 "Total unequal (FALSE) data rows = " + falseTotal + "\n" +
-                "Total rows not found in file 1 = " + noMatchB + "\n" +
-                "Total rows not found in file 2 = " + noMatchA;
+                "Total rows not found in " + fileName1 + " = " + noMatchB + "\n" +
+                "Total rows not found in " + fileName2 + " = " + noMatchA + "\n" +
+                "Column suffix _a = " + fileName1 + "\n" +
+                "Column suffix _b = " + fileName2;
 
         resultsMap.put(summaryKey, summaryValue);
     }

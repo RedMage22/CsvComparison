@@ -15,19 +15,18 @@ public class CsvProcessor {
     private CsvProcessor() {}
 
     public static void process(CsvModel model) throws FileNotFoundException {
-        process(model.getControl(), model.getSample(), model.getOutputDir());
+        process(model.getFile1(), model.getFile2(), model.getOutputDir());
     }
 
-    public static void process(File control, File sample, File output) throws FileNotFoundException {
-        if (control != null && sample != null && output != null) {
-            Map<String, String> mapA = CsvReader.read(control.getPath());
-            Map<String, String> mapB = CsvReader.read(sample.getPath());
-            Map<String, String> resultsMap = CsvMatcher.match(mapA, mapB);
+    public static void process(File file1, File file2, File output) throws FileNotFoundException {
+        if (file1 != null && file2 != null && output != null) {
+            Map<String, String> mapA = CsvReader.read(file1.getPath());
+            Map<String, String> mapB = CsvReader.read(file2.getPath());
+            Map<String, String> resultsMap = CsvMatcher.match(mapA, mapB, file1.getName(), file2.getName());
             CsvWriter.write(output.getPath(), resultsMap);
         } else {
             throw new FileNotFoundException();
         }
-
     }
 
 }

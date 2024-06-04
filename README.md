@@ -1,6 +1,6 @@
 ### Prerequisites
 
-* java jdk version 11
+* javafx jdk version 11
 
 ### Installation
 
